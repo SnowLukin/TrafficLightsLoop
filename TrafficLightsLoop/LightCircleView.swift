@@ -10,12 +10,16 @@ import SwiftUI
 struct LightCircleView: View {
     
     var color: Color
+    var opacity: Double
     
     var body: some View {
         Circle()
-            .foregroundColor(color)
-            .frame(width: 100, height: 100)
+            .foregroundColor(color.opacity(opacity))
+            .frame(maxWidth: .infinity)
+
             .overlay(Circle().stroke(Color.white, lineWidth: 4))
+            .padding(.leading, 50)
+            .padding(.trailing, 50)
     }
 }
 
@@ -24,7 +28,7 @@ struct LightCircleView_Previews: PreviewProvider {
         ZStack {
             Color.blue
                 .ignoresSafeArea()
-            LightCircleView(color: .red)
+            LightCircleView(color: .red, opacity: 1)
         }
         .previewDevice("iPhone 13 Pro")
     }

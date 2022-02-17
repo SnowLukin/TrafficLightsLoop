@@ -7,16 +7,16 @@
 
 import SwiftUI
 
+enum LightState {
+    case red
+    case yellow
+    case green
+    case none
+}
+
 struct TrafficLightsLoopView: View {
     
-    enum LightState {
-        case red
-        case yellow
-        case green
-        case none
-    }
-    
-    @State var onLight = LightState.none
+    @State var onLight: LightState = .none
     
     var body: some View {
         ZStack {
@@ -24,9 +24,7 @@ struct TrafficLightsLoopView: View {
                 .ignoresSafeArea()
             VStack {
                 Spacer()
-                getLight(lightState: .red, color: .red)
-                getLight(lightState: .yellow, color: .yellow)
-                getLight(lightState: .green, color: .green)
+                lightsStack
                 Spacer()
                 switchColorButton
                 restartButton
@@ -39,30 +37,27 @@ struct TrafficLightsLoopView: View {
 struct TrafficLightsLoopView_Previews: PreviewProvider {
     static var previews: some View {
         TrafficLightsLoopView()
-            .previewDevice("iPhone 13 Pro")
+            .previewDevice("iPhone 8")
     }
 }
 
 extension TrafficLightsLoopView {
     
-    private func getLight(lightState: LightState, color: Color) -> some View {
-        LightCircleView(
-            color: onLight == lightState
-            ? color
-            : color.opacity(0.4)
-        )
+    private var lightsStack: some View {
+        VStack {
+            LightCircleView(color: .red,
+                            opacity: onLight == .red ? 1 : 0.4)
+            LightCircleView(color: .yellow,
+                            opacity: onLight == .yellow ? 1 : 0.4)
+            LightCircleView(color: .green,
+                            opacity: onLight == .green ? 1 : 0.4)
+        }
+        .padding()
     }
     
     private var switchColorButton: some View {
         Button {
-            switch onLight {
-            case .red:
-                onLight = .yellow
-            case .yellow:
-                onLight = .green
-            default:
-                onLight = .red
-            }
+            switchLightState()
         } label: {
             let text = onLight == .none ? "Start" : "Next"
             Text(text)
@@ -75,8 +70,6 @@ extension TrafficLightsLoopView {
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(Color.white, lineWidth: 5)
                 )
-                
-                
         }
         .background(.blue)
         .cornerRadius(12)
@@ -91,6 +84,17 @@ extension TrafficLightsLoopView {
             Text("Restart")
                 .foregroundColor(.red)
                 .padding()
+        }
+    }
+    
+    private func switchLightState() {
+        switch onLight {
+        case .red:
+            onLight = .yellow
+        case .yellow:
+            onLight = .green
+        default:
+            onLight = .red
         }
     }
 }
